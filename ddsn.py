@@ -6,7 +6,7 @@ import os
 DOMAIN = "yourdomain.tld"
 RECORD_NAME = "@"
 IP_FILE = "/root/last_ip.txt"
-API_KEY = "API_TOKEN"
+API_KEY = "API_KEY"
 API_URL = "https://developers.hostinger.com/api/dns/v1/zones/yourdomain.tld"
 
 def get_public_ip():
