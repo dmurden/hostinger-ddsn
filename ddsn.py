@@ -14,11 +14,11 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-DOMAIN = "saintjosephradio.org"
+DOMAIN = "YOURDOMAN.tld"
 RECORD_NAME = "@"
 IP_FILE = "/root/last_ip.txt"
-API_KEY = "d8riq328NtPo48T2wTGyDYqVO6m0zv0C3XT1Ipooef4d637e"
-API_URL = "https://developers.hostinger.com/api/dns/v1/zones/saintjosephradio.org"
+API_KEY = "API_KEY"
+API_URL = "https://developers.hostinger.com/api/dns/v1/zones/YOURDOMAIN.tld"
 
 def get_public_ip():
     return requests.get("https://api.ipify.org").text.strip()
