@@ -10,15 +10,15 @@ logging.basicConfig(
     filemode="a",
     format="{asctime} - {levelname} - {message}",
     style="{",
-    datefmt="%Y-%m-%d %H:%M",
+    datefmt="%Y-%m-%d %H:%M:%S",
     level=logging.INFO,
 )
 
-DOMAIN = "YOURDOMAN.tld"
+DOMAIN = "MYDOMAIN.tld"
 RECORD_NAME = "@"
 IP_FILE = "/root/last_ip.txt"
 API_KEY = "API_KEY"
-API_URL = "https://developers.hostinger.com/api/dns/v1/zones/YOURDOMAIN.tld"
+API_URL = "https://developers.hostinger.com/api/dns/v1/zones/MYDOMAIN.tld"
 
 def get_public_ip():
     return requests.get("https://api.ipify.org").text.strip()
@@ -37,7 +37,7 @@ def update_dns(ip):
     "overwrite": True,
     "zone": [{"name": RECORD_NAME,
     "records": [{"content": ip}],
-    "ttl": 300,
+    "ttl": 900,
     "type": "A"}]}
     headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
     try:
@@ -49,6 +49,8 @@ def update_dns(ip):
         logging.error("HTTP error occurred:", e)
     except requests.exceptions.RequestException as e:
         logging.error("A request error occurred:", e)
+    else:
+        save_ip(ip)
 
 def main():
     logging.info("ddns excuting!")
@@ -57,7 +59,6 @@ def main():
     if current_ip != last_ip:
         logging.info("IP changed: %s", current_ip)
         update_dns(current_ip)
-        save_ip(current_ip)
 
 if __name__ == "__main__":
     main()
