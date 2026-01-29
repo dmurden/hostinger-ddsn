@@ -1,0 +1,6 @@
+[Unit]
+Description=ddns.py job
+
+[Service]
+ExecStart=/usr/bin/python3 /root/ddns.py
+KillMode=process
