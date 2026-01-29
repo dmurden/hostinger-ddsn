@@ -2,12 +2,23 @@
 import requests
 import json
 import os
+import logging
 
-DOMAIN = "yourdomain.tld"
+logging.basicConfig(
+    filename="/var/log/ddns.log",
+    encoding="utf-8",
+    filemode="a",
+    format="{asctime} - {levelname} - {message}",
+    style="{",
+    datefmt="%Y-%m-%d %H:%M",
+    level=logging.INFO,
+)
+
+DOMAIN = "saintjosephradio.org"
 RECORD_NAME = "@"
 IP_FILE = "/root/last_ip.txt"
-API_KEY = "API_KEY"
-API_URL = "https://developers.hostinger.com/api/dns/v1/zones/yourdomain.tld"
+API_KEY = "d8riq328NtPo48T2wTGyDYqVO6m0zv0C3XT1Ipooef4d637e"
+API_URL = "https://developers.hostinger.com/api/dns/v1/zones/saintjosephradio.org"
 
 def get_public_ip():
     return requests.get("https://api.ipify.org").text.strip()
@@ -29,13 +40,22 @@ def update_dns(ip):
     "ttl": 300,
     "type": "A"}]}
     headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
-    r = requests.put(API_URL, headers=headers, data=json.dumps(payload))
-    r.raise_for_status()
+    try:
+        r = requests.put(API_URL, headers=headers, data=json.dumps(payload))
+        logging.info("Status Code: %s", r.status_code)
+        logging.info("Response Content: %s", r.text)
+        r.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        logging.error("HTTP error occurred:", e)
+    except requests.exceptions.RequestException as e:
+        logging.error("A request error occurred:", e)
 
 def main():
+    logging.info("ddns excuting!")
     current_ip = get_public_ip()
     last_ip = get_last_ip()
     if current_ip != last_ip:
+        logging.info("IP changed: %s", current_ip)
         update_dns(current_ip)
         save_ip(current_ip)
 
